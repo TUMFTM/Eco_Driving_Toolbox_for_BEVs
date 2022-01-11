@@ -41,26 +41,21 @@ OFR.resQs.Energy
 %% Optimize with customized values
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-options.twoMotors = 1;
-load('Data/Vehicles/Paper_ID3_2M.mat')
-
-%% Generate Driving Mission Object
-OFR2=ClassDefs.OptiFrameRoute('t',veh2M,options);
 
 %% Edit weighting of objective function
-OFR2.defineWeightParam(1, 2, 0.1);   %Weight on jerk, acceleration, energy (other weighting parameters stay default)
+OFR.defineWeightParam(1, 2, 0.1);   %Weight on jerk, acceleration, energy (other weighting parameters stay default)
 
 %% Edit constant driving parameters
-OFR2.defineConstParam(5, -10, 5);   %  maximum acceleleration during traction, maximum acceleleration during braking, maximum jerk
+OFR.defineConstParam(5, -10, 5);   %  maximum acceleleration during traction, maximum acceleleration during braking, maximum jerk
 
 %% Optimize Driving Mission
-OFR2.optiDrivingMission(dm,aux,stSOC);
+OFR.optiDrivingMission(dm,aux,stSOC);
 
 %% Plot results
-OFR2.plotFun();
+OFR.plotFun();
 
 %% Show results of post processed quasi static simulation
-OFR2.resQs.Energy
+OFR.resQs.Energy
 
 
 
