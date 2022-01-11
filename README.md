@@ -1,4 +1,4 @@
-# Eco-Driving-Toolbox for Battery Electric Powertrains
+# Eco-Driving-Toolbox for Battery Electric Vehicles
  
 This repository provides a toolbox for tank-to-distance-eco-driving for battery electric vehicles. Thereby, the losses of battery, power electronics, motor, and gearbox are 
 incorporated and minimized. Based on tabulated data (loss maps) of the single components meta-models can be generated, which can be used within the optimization. 
