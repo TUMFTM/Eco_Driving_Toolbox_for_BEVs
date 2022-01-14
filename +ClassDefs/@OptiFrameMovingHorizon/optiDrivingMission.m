@@ -90,11 +90,11 @@ for simt = 0:self.updateSeq: dm.t(end)
     if current_percent~= old_percent
         old_percent = current_percent;
         cur_av_solv_time=sum(self.time)/numel(self.time(self.time~=0))*1000;
-        disp(strcat('Vehicle is driving. Made: ', int2str(current_percent), ' %'))
-        disp(strcat('Current average solver time ', int2str(cur_av_solv_time), ' ms'))
+        disp(strcat('Vehicle is driving. Made: '," ", int2str(current_percent), '%'))
+        disp(strcat('Current average solver time: '," ", int2str(cur_av_solv_time), ' ms'))
         if self.twoGears == 1
             cur_av_solv_time_rel=sum(self.timeRel)/numel(self.timeRel(self.timeRel~=0))*1000;
-           disp(strcat('Current average solver time relaxed ', int2str(cur_av_solv_time_rel), ' ms')) 
+           disp(strcat('Current average solver time relaxed: '," ", int2str(cur_av_solv_time_rel), ' ms')) 
         end
     end
     

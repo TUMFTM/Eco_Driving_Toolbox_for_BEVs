@@ -18,7 +18,7 @@ options.solver.splitMotMap = 1;
 options.solver.minTorqueRecu = 0;
 options.carEstimater = 'V2V';  %%'V2V' od 'a'
 options.plot.results = 1; % Plot results of quasi static simulation
-options.plot.dynamic = 1;  %0,1,2
+options.plot.dynamic = 2;  %0,1,2 slows down optimization
 
 
 %% Set variable vehicle Parameters
@@ -30,7 +30,7 @@ stSOC = 80;
 OFM = ClassDefs.OptiFrameMovingHorizon('t',[],options);
 
 %% Set Driving Behavior
-OFM.defineWeightParam(25, 0.0, 4, 0.0001, 0.0001, 0.0, 0, 4,  0.01);  %(w_j, w_a, w_E, w_r, w_r_br, w_v, w_v_lim, w_vEnd,  w_s)
+OFM.defineWeightParam(20, 0, 4, 0.0001, 0.000001, 0, 0, 4,  0.01);  %(w_j, w_a, w_E, w_r, w_r_br, w_v, w_v_lim, w_vEnd,  w_s)
 
 %% Optimize Driving Mission
 OFM.optiDrivingMission(dm, aux, stSOC);   

@@ -22,10 +22,11 @@ Two examples are provided:
 ## Folder Structure
 The code is structured as follows
 - '+ClassDefs' includes all class definitions
-- '+HelpFun' includes functions that are needed at different locations of the code
+- '+HelpFun' includes functions that are needed at different locations of the code and the fitting tool
 - 'Casadi' is a default empty folder. Please add Casadi in here
 - 'Data' includes all required data as loss maps and their fits or saved driving missions
-- 'PreProcessing' includes the fitting tool for the powertrain models and a script to generate driving missions
+- 'PreProcessing' includes the skripts to generate the fitted loss models of the Volkswagen ID3
+- 'DataExtern' includes data from extern sources
  
 ## General Program Structure
 ![Alt text](+ClassDefs/Structure.png?raw=true "Program Structure")

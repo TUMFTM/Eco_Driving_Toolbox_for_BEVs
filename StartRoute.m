@@ -22,7 +22,7 @@ options.solver.minTorqueRecu = 0;
 options.plot.results = 1;
 
 %% Set variable vehicle Parameters
- aux=205;
+aux=300;
 stSOC = 80;  % Combination of high SOC and Speed Limit is hard to calculate
 
 %% Generate Driving Mission Object
@@ -41,21 +41,26 @@ OFR.resQs.Energy
 %% Optimize with customized values
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+options.twoMotors = 1;
+load('Data/Vehicles/Paper_ID3_2M.mat')
+
+%% Generate Driving Mission Object
+OFR2=ClassDefs.OptiFrameRoute('t',veh2M,options);
 
 %% Edit weighting of objective function
-OFR.defineWeightParam(1, 2, 0.1);   %Weight on jerk, acceleration, energy (other weighting parameters stay default)
+OFR2.defineWeightParam(1, 2, 0.1);   %Weight on jerk, acceleration, energy (other weighting parameters stay default)
 
 %% Edit constant driving parameters
-OFR.defineConstParam(5, -10, 5);   %  maximum acceleleration during traction, maximum acceleleration during braking, maximum jerk
+OFR2.defineConstParam(5, -10, 5);   %  maximum acceleleration during traction, maximum acceleleration during braking, maximum jerk
 
 %% Optimize Driving Mission
-OFR.optiDrivingMission(dm,aux,stSOC);
+OFR2.optiDrivingMission(dm,aux,stSOC);
 
 %% Plot results
-OFR.plotFun();
+OFR2.plotFun();
 
 %% Show results of post processed quasi static simulation
-OFR.resQs.Energy
+OFR2.resQs.Energy
 
 
 
