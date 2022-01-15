@@ -12,7 +12,7 @@ speed planner (M) to simulate an adaptive cruise control is included. The post-p
 - Casadi (tested on version v3.5.5; https://web.casadi.org/get/)
  
 ## Installation
-Copy Casadi into "Casadi"-Folder of commit
+Copy downloaded Casadi.zip into '\Casadi'-Folder and extract it there
  
 ## Test Model
 Two examples are provided:
