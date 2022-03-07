@@ -24,7 +24,7 @@ if self.plotDynamic == 2
 end
 
 
-plot(self.res.s,self.res.v,'g')                             % optimal solution
+
 xlim([self.res.s(1)-50 self.res.s(end)+100])       % x limit
 ylim([0 max(20,max(self.res.v)+2)])                %y limit
 
@@ -33,9 +33,10 @@ s_vc =  interp1(self.dm.t,self.dm.lv_s,simt+1);
 scatter(self.res.s(1:lensolm),self.res.v(1:lensolm),'r','filled') % Driven distance
 scatter(s_vc,v_vc,'b','filled')                             % Leading vehicle
 plot(self.est.s,self.est.v,'k','LineWidth',1)           % Estimation
+plot(self.res.s,self.res.v,'g')                             % optimal solution
 
 if simt ==0
-    hlegend=legend('Plan','Ego Vehicle','Leading Vehicle','Leading Vehicle Prediction','Max Speed','Location','northeast','AutoUpdate','off');
+    hlegend=legend('Max Speed','Ego-vehicle','Leading vehicle','Leading Vehicle Prediction','Plan ego-vehicle','Location','northeast','AutoUpdate','off');
     xlabel('Distance in m')
     ylabel('Speed in m/s')
 end
