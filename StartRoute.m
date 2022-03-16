@@ -8,7 +8,7 @@ addpath(genpath('Data/SavedDrivingMissions'));
 
 
 %% Load Driving Mission
-load('Data/SavedDrivingMissions/C2C_2.mat')
+load('Data/SavedDrivingMissions/C2C_PAPER.mat')
 v=[];
 %load('Data/Vehicles/Paper_ID3.mat')
 
