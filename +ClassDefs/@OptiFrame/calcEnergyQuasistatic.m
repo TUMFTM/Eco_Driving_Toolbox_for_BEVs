@@ -32,7 +32,7 @@ F_roll = (self.veh.f_r_c0 + self.veh.f_r_c1 * v+self.veh.f_r_c2 *v.^2) * self.co
 F_air =  0.5 * self.veh.c_a * self.veh.a_a * self.constants.roh_a * v.^2;
 F_slope = 0;
 F_acc = [a * self.veh.m_t * self.veh.lambda * 1000; 0];
-F_wheel = F_roll + F_air + F_slope + F_acc;
+F_wheel = F_roll + F_air + F_slope + F_acc-[T_b*self.veh.r;0];  % Braking Force added
 F_wheel(v==0)=0;
 
 %% Distribution Front/Rear based on share of traction torque at wheel from optimization
@@ -124,7 +124,7 @@ Losses.Energy.E_loss_mot1 = sum((P_loss_mot_el1 + P_loss_mot_mech1).*dt)/3600000
 Losses.Energy.E_loss_mot1_el = sum((P_loss_mot_el1).*dt)/3600000;
 Losses.Energy.E_loss_mot1_mech = sum((P_loss_mot_mech1).*dt)/3600000;
 Losses.Energy.E_loss_gb1 = sum((P_loss_gb1).*dt)/3600000;
-Losses.Energy.E_loss_WtD = sum(((F_roll(1:end-1)+F_air(1:end-1)).*v(1:end-1)).*dt)/3600000;
+Losses.Energy.E_loss_WtD = sum(F_wheel_1(1:end).*v(1:end-1).*dt)/3600000; %sum(((F_roll(1:end-1)+F_air(1:end-1)).*v(1:end-1)).*dt)/3600000; %Numerical issue since sum of F_acc not exactly zero
 if self.twoMotors == 1
     Losses.Energy.E_loss_mot2 = sum((P_loss_mot_el2 + P_loss_mot_mech2).*dt)/3600000;
     Losses.Energy.E_loss_mot2_el = sum((P_loss_mot_el2 ).*dt)/3600000;
@@ -218,14 +218,18 @@ end
 
 function   [v, a, dt, t, aux, stSOC,n_1,n_2, T_1, T_2, T_b, Cl,Slack_GB,Slack_GB2] = interfaceM(self)
 
+
+
     v=self.res.v(~isnan(self.res.v)); % Velocity
-    a=self.res.a; % get acceleration
-    dt =diff(self.res.t); %get dt
+    a=self.res.a(~isnan(self.res.a)); % get acceleration
+    dt =diff(self.res.t(~isnan(self.res.t))); %get dt
     t = [0; cumsum(dt)];
     aux = self.paramVariable.p_aux_w;
     stSOC = self.stSOC;
-    T_1 = self.res.T_1;
-    T_b = self.res.T_b;
+    T_1 = self.res.T_1(~isnan(self.res.T_1)); 
+    T_b = self.res.T_b(~isnan(self.res.T_b)); 
+
+
     
     %Motorrevs Motor 1
     n_1 = v(1:end-1) / (2*pi * self.veh.r) * self.veh.i_gr1_1; % Motor 1 speed  in [1/s]
@@ -330,15 +334,15 @@ xd =  motor.data.n_radps(:,1);
 yd =  motor.data.T_Nm(1,:);
 [xd,yd]=ndgrid(xd,yd);
 
-P_loss_grid =  motor.losses.mech_W;
-P_loss_grid = fillmissing(P_loss_grid,'linear',2,'EndValues','nearest');
-GRIDINT=griddedInterpolant(xd,yd,  P_loss_grid,'linear','linear' );
 
-P_loss_mot_mech=GRIDINT(omega, abs(T));
+T_loss_grid =  motor.losses.mech_W./motor.data.n_radps;
+T_loss_grid(1,:) = 0;
+T_loss_grid = fillmissing(T_loss_grid,'linear',2,'EndValues','nearest');
+GRIDINT=griddedInterpolant(xd,yd,  T_loss_grid,'linear','linear' );
 
-T_loss_mot = P_loss_mot_mech./omega;
-T_loss_mot(isnan(T_loss_mot))=0;
-T_loss_mot(isinf(T_loss_mot))=0;
+T_loss_mot=GRIDINT(omega, abs(T));
+
+P_loss_mot_mech = T_loss_mot.*omega;
 end
 
 function [P_mot,P_loss] = calcElMotorLossesMap(motor,omega,T)

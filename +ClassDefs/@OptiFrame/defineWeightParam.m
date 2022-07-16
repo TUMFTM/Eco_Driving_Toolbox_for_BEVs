@@ -7,7 +7,8 @@
      w_v,...    %7
      w_v_lim,...   %8
      w_vEnd,...  %9
-     w_s)   %10
+     w_s,...%10
+     w_cons)   %11
 % Designed by: Alexander Koch and Tim Bürchner (FTM, Technical University of Munich)
 %-------------
 % Created on: 2019-2022
@@ -26,7 +27,14 @@
 %              - w_v_lim: Weight on speed limit (minimization  diference between speedlimit and vehicle speed)
 %              - w_vEnd: Weight on kinetic energy at end of horizon
 %              - w_s: Weight on setting target distance to leading vehicle
+%              - w_cons: Weight on vehicle consumption
 % ------------
+
+if nargin >= 11
+    self.paramWeighting.w_cons = w_cons;
+else
+    self.paramWeighting.w_cons = 0;
+end
 
 if nargin >= 10
     self.paramWeighting.w_s = w_s;
@@ -79,7 +87,7 @@ end
 if nargin >= 2
     self.paramWeighting.w_j = w_j;
 else
-    self.paramWeighting.w_j = 5;
+    self.paramWeighting.w_j = 20;
 end
 
 

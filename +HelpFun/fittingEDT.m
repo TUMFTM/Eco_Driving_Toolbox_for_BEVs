@@ -15,7 +15,7 @@ function [fitFun,info] = ...
 %              squares
 %              - PARA.OnlyPositiveCoeff: 0/1, if 1: fitting coeiffcients must be
 %              positive
-%              - PARA.IgnoreExp: 'pxy', coeffcient p_x_y is ignored
+%              - PARA.IgnoreExp: '{pxy}', coeffcient p_x_y is ignored
 %              - PARA.FlipIneq: 0/1, if 1: A_ineq = -A_ineq;
 % ------------
 % Input:    - xM_use: x-values
@@ -195,7 +195,7 @@ end
 
 
 % Fitting with fmincon
-options = optimoptions('quadprog','Display','iter');
+options = optimoptions('quadprog','Display','final');
 options.OptimalityTolerance=10^-10;
 options.MaxIterations=5000000;
 [solutionM, ~] = quadprog(F_allM,f_allM,A_ineq,b_ineq,A_eq,b_eq,[],[],[],options);
@@ -207,7 +207,7 @@ info.coeffs = solutionM;
 fitFun =@(x,y) +HelpFun.genPolyFun(info,x,y);
 info.fitFun =  fitFun;
 info.rmse = sqrt(     sum(    (fitFun(xM_use,yM_use)-MAPM_use).^2.   )    /numel(xM_use)            );
-info.rmsre = sqrt(    1/ numel(xM_use)    *  sum(    ((fitFun(xM_use,yM_use)-MAPM_use)./MAPM_use).^2.   )              );
+info.rmsre = sqrt(    1/ numel(xM_use(MAPM_use~=0))    *  sum(    ((fitFun(xM_use(MAPM_use~=0),yM_use(MAPM_use~=0))-MAPM_use(MAPM_use~=0))./MAPM_use(MAPM_use~=0)).^2.   )              );
 
 
 end

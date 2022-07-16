@@ -8,7 +8,6 @@ addpath(genpath('Data/SavedDrivingMissions'));
 %% Load Driving Mission
  load('MPC_long_PAPER.mat')
 
-
 %% Set Optimizer Options
 options.twoGears = 0;
 options.twoMotors = 0;
@@ -18,13 +17,11 @@ options.solver.splitMotMap = 1;
 options.solver.minTorqueRecu = 0;
 options.carEstimater = 'V2V';  %%'V2V' od 'a'
 options.plot.results = 1; % Plot results of quasi static simulation
-options.plot.dynamic = 2;  %0,1,2 slows down optimization
-
+options.plot.dynamic = 0;  %0,1,2 slows down optimization
 
 %% Set variable vehicle Parameters
- aux=205;
+aux=300;
 stSOC = 80;
-
 
 %% Generate Driving Mission Object
 OFM = ClassDefs.OptiFrameMovingHorizon('t',[],options);

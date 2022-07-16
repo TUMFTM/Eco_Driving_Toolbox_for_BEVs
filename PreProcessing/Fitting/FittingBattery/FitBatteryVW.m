@@ -18,10 +18,10 @@ OCV = M(:,1);
 SOC = M(:,2);
 
 % Cut relevant SOC area
-OCV_relevant = OCV((SOC>0.04));
-SOC_relevant = SOC(SOC>0.04);
-OCV_relevant =  OCV_relevant(SOC_relevant<0.97);
-SOC_relevant = SOC_relevant(SOC_relevant<0.97);
+OCV_relevant = OCV((SOC>0.041));
+SOC_relevant = SOC(SOC>0.041);
+OCV_relevant =  OCV_relevant(SOC_relevant<=0.97);
+SOC_relevant = SOC_relevant(SOC_relevant<=0.97);
 
 % Data for Fitting
 xM_use = SOC_relevant;

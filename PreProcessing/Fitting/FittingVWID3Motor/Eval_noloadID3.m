@@ -1,6 +1,6 @@
 clear
 
-load('C:\Users\ga73boc\Downloads\track_1500000309481.mat')
+load('DataExtern/PowertrainComponents/Motor/ID3/track_1500000309481.mat')
 
     VarNames = cellstr(columns);
     RawData = array2table(data , 'VariableNames', VarNames);
@@ -43,7 +43,7 @@ load('C:\Users\ga73boc\Downloads\track_1500000309481.mat')
     %%
     
   %%  Second run
-       load('C:\Users\ga73boc\Downloads\track_1500000309480.mat')
+load('DataExtern/PowertrainComponents/Motor/ID3/track_1500000309480.mat')
     
            VarNames = cellstr(columns);
     RawData = array2table(data , 'VariableNames', VarNames);
@@ -113,7 +113,7 @@ load('C:\Users\ga73boc\Downloads\track_1500000309481.mat')
     mean_low = mean(Vars{1}.Power.P_Inverter(xs{1,2}:xe{1,2}));
     
     x_ineq = [0 500 1000 1500];
-    z_ineq =0*mean_low*ones(size(x_ineq));
+    z_ineq =0*ones(size(x_ineq));
     
     
     

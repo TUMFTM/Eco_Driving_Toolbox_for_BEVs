@@ -35,9 +35,11 @@ classdef Optimizer< handle
         minTorqueRecu;       % Parameter if minimal torque for recu should be considered
         maxDistance;       %  Parameter if maximal distance should be constraint (only for MPC)
         g;                       % Inequality contraints
-       lbg;                        %   Lower bound of inequality contraints
+        lbg;                        %   Lower bound of inequality contraints
         ubg;                           %   Upper bound of inequality contraints
-       J;                               % Objective function
+        J;                               % Objective function
+        limitIWR;                  % Parameter if Inertial work rating should be limited (For Cycle Beating)
+        limitRMSSEv;             % Parameter if RMSSE for v-ref should be limited (For Cycle Beating)
         
     end
     
@@ -72,17 +74,42 @@ classdef Optimizer< handle
             self.minTorqueRecu = OptiFrame.minTorqueRecu;
             
             %MPC and Route individual parameters
-            if  isfield(OptiFrame,'limitOverallRoute')
+            if  isprop(OptiFrame,'limitOverallRoute')
                 self.limitOverallRoute=OptiFrame.limitOverallRoute;
             else
                 self.limitOverallRoute=0;
             end
             
-            if  isfield(OptiFrame,'maxDistance')
+            if  isprop(OptiFrame,'maxDistance')
                 self.maxDistance = OptiFrame.maxDistance;
             else
                 self.maxDistance = 0;
             end
+            
+            if isprop(OptiFrame,'limitIWR')
+                self.limitIWR = OptiFrame.limitIWR;
+                if self.limitIWR == 1
+                    self.paramConstant.refCycle = OptiFrame.dm.ref;
+                    self.paramConstant.lbIWR = OptiFrame.dm.lbIWR;
+                    self.paramConstant.ubIWR = OptiFrame.dm.ubIWR;
+                end
+            else
+                self.limitIWR = 0;
+            end
+            
+            if isprop(OptiFrame,'limitRMSSEv')
+                self.limitRMSSEv = OptiFrame.limitRMSSEv;
+                if self.limitRMSSEv == 1
+                    self.paramConstant.refCycle = OptiFrame.dm.ref;
+                    self.paramConstant.lbRMSSEv = OptiFrame.dm.lbRMSSEv;
+                    self.paramConstant.ubRMSSEv = OptiFrame.dm.ubRMSSEv;
+                end
+            else
+                self.limitRMSSEv = 0;
+            end
+            
+            
+            
             
             
             initSolver(self)

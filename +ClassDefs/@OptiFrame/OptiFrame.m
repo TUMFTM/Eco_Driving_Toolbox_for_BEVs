@@ -41,6 +41,7 @@ classdef OptiFrame< handle
         x0;                                             % First guess
         plotResults;                               % Parameter if results should be plotted
         minTorqueRecu;                          % Parameter if minimal torque for recu should be considered
+
     end
     
     properties (Constant)

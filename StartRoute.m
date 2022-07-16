@@ -8,9 +8,10 @@ addpath(genpath('Data/SavedDrivingMissions'));
 
 
 %% Load Driving Mission
-load('Data/SavedDrivingMissions/C2C_PAPER.mat')
-v=[];
-%load('Data/Vehicles/Paper_ID3.mat')
+load('Data/SavedDrivingMissions/C2C_Paper.mat')
+
+%% Vehicle
+v=[]; % This generates default vehicle
 
 %% Set Optimizer Options
 options.twoGears = 0;
@@ -61,8 +62,3 @@ OFR2.plotFun();
 
 %% Show results of post processed quasi static simulation
 OFR2.resQs.Energy
-
-
-
-
-

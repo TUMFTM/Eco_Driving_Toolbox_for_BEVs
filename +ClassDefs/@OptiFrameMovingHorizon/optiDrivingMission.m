@@ -18,6 +18,7 @@ function [] = optiDrivingMission(self, dm, aux, stSOC)
 %% Initilize
 if self.plotDynamic >= 1
 figure
+set(gcf,'color','w');
 hold on
 if self.plotDynamic == 2
     subplot(2,1,1)
@@ -38,28 +39,28 @@ if self.twoGears==1
 end
 
 % Solution Variable
-self.resMh.T_1 = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
-self.resMh.T_b = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
-self.resMh.P_b = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
-self.resMh.v =nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq))+1,1);
+self.resMh.T_1 = nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
+self.resMh.T_b =  nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
+self.resMh.P_b =  nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
+self.resMh.v = nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq))+1,1);
 self.resMh.v(1)=0;
 self.resMh.s = nan(size(self.resMh.v ));
 self.resMh.s(1)=0;
 self.resMh.t = nan(size(self.resMh.v ));
 self.resMh.t(1)=0;
 self.resMh.SOC = stSOC*ones(size(self.resMh.v ));
-self.resMh.a = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
+self.resMh.a =  nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
 if self.twoMotors == 1
-    self.resMh.T_2 = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
+    self.resMh.T_2 =  nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
     if self.splitGbMap  == 1
-        self.resMh.Sl_loss_gb_2 = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
+        self.resMh.Sl_loss_gb_2 =  nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
     end
 end
 if self.twoGears == 1
-    self.resMh.Cl = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
+    self.resMh.Cl =  nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
 end
 if self.splitGbMap  == 1
-    self.resMh.Sl_loss_gb = nan(length(self.dm.t)*length(self.horizon(self.horizon<self.updateSeq)),1);
+    self.resMh.Sl_loss_gb =  nan(length(self.dm.t)/self.updateSeq*length(self.horizon(self.horizon<self.updateSeq)),1);
 end
 
 % Initalize Timer
@@ -85,6 +86,7 @@ indx = 1;
 counter = 1;
 %% LOOPING
 for simt = 0:self.updateSeq: dm.t(end)
+
     
     current_percent = round(simt / dm.t(end)*100,-1);
     if current_percent~= old_percent
@@ -119,6 +121,16 @@ for simt = 0:self.updateSeq: dm.t(end)
     if self.optimizer.solver.stats.success == 0
         disp('No optimal solution found')
         self.optiError(counter) = 1;
+        disp('Initilize new x0')
+        self.x0(2:end) = self.x0(1);
+        disp('Redo Optimization')
+        [self.res,self.time(counter)] = self.optimizer.(strcat("optimiseProfile",self.indVar))(self.paramVariable, self.lbx, self.ubx,self.x0);
+        if self.optimizer.solver.stats.success == 1
+            disp('New x0 succeeded')
+        else
+            disp('Still no optimal solution found')
+        end
+        
     end
     
     % Add part to overall solution

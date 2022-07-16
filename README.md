@@ -76,8 +76,11 @@ For the moving horizon optimization, the stuct must include:
 
 
 ## Publication
-LINK
-DOI: 10.1
+
+Koch, Alexander and  Nicoletti, Lorenzo and  Herrmann, Thomas and Lienkamp, Markus - 
+Implementation and Analyses of an Eco-Driving Algorithm for Different Battery Electric Powertrain Topologies based on a Split Loss Integration Approach, MDPI Energies 2022
+LINK:
+DOI: 
 
 Contact person: [Alexander Koch](mailto:alexander.koch@tum.de)
  

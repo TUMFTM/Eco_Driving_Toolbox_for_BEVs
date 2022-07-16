@@ -49,7 +49,11 @@ if self.twoMotors
 end
 if self.twoGears
      yyaxis right
+     if size(self.res.Cl) == size(self.res.T_1)
+         Cl_plot = self.res.Cl;
+     else
      Cl_plot =  reshape(repmat(self.res.Cl,uint8(1),uint8(self.n/self.nGear))',self.n,1);
+     end
      stairs(ts,Cl_plot,'LineWidth',2)
      legend('Optimizer Motor 1','Simulation Motor 1', 'Brake', 'Gear')
      xlabel('Gear','FontSize',12)

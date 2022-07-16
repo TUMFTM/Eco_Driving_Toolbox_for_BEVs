@@ -402,6 +402,46 @@ if strcmp(self.type , 'R') &&  self.limitOverallRoute == 1
     lbg = [lbg; -inf];
 end
 
+
+% Inertial Work Rating (Cycle Beating)
+if strcmp(self.type , 'R') &&  self.limitIWR == 1
+    ds_IWR = diff(s);
+    
+    
+    %stepFun =  0.5+atan(100*a)/pi;
+    %heVar = max(a,0);
+    
+    IWR_d = (a .* ds_IWR);
+    IWR_d = max(0,IWR_d);
+    IWR_driven = sum(IWR_d);
+    %IWR_target = sum(self.paramConstant.refCycle.a(self.paramConstant.refCycle.a>0) .*self.paramConstant.refCycle.ds(self.paramConstant.refCycle.a>0));
+    
+    IWR_target = (self.paramConstant.refCycle.a .*self.paramConstant.refCycle.ds);
+    IWR_target(IWR_target<0) = 0;
+    IWR_target = sum(IWR_target);
+    
+    IWR_cst = (IWR_driven-IWR_target)/IWR_target;
+    g = [g; IWR_cst];
+    ubg = [ubg; self.paramConstant.ubIWR];
+    lbg = [lbg; self.paramConstant.lbIWR];  
+end
+
+
+% RMSSE velocity (Cycle Beating)
+if strcmp(self.type , 'R') &&  self.limitRMSSEv == 1
+    
+    RMSSEvsqared = sum((v-self.paramConstant.refCycle.v).^2) / length(v);
+
+    g = [g; RMSSEvsqared];
+    ubg = [ubg; self.paramConstant.ubRMSSEv^2];
+    lbg = [lbg; self.paramConstant.lbRMSSEv^2];  
+end
+
+
+
+
+
+
 %% MPC Optimization Constraints
 if strcmp(self.type , 'M')
   
@@ -426,7 +466,7 @@ end
 
 
 %% Cost Function
-J = calcCostFun(self, j_cst, a, v,T_1,T_2,T_b, P_b,...
+J = calcCostFun(self, j_cst, a, v,s,T_1,T_2,T_b, P_b,...
      delta_t_jerk, delta_t_param,...
      T_1_last_param,T_2_last_param, T_b_last_param,delta_t_last_param,n_m2,...
      int_veh_dist,v_max);
@@ -475,7 +515,7 @@ end
 
 
 
-function [J] = calcCostFun(self,jerk, a, v,T_1,T_2,T_b, P_b, delta_t_jerk,...
+function [J] = calcCostFun(self,jerk, a, v,s,T_1,T_2,T_b, P_b, delta_t_jerk,...
     delta_t_param,T_1_last_param,T_2_last_param, T_b_last_param,delta_t_last_param,n_m2,int_veh_dist,v_max)
 %CALC_COSTFUN Calculates costs for optimization problem
 
@@ -508,6 +548,7 @@ elseif strcmp(self.type , 'M')
 end
 
 
+
 %% Cost Function
 J =   ...
      self.paramWeighting.w_j * sum(jerk.^2 .* delta_t_jerk) * scaling_f ...
@@ -515,9 +556,10 @@ J =   ...
     + self.paramWeighting.w_E * sum1(P_b .* delta_t_param)  ... 
     + self.paramWeighting.w_r * sum1(r_T_1) ...
     + self.paramWeighting.w_r_br * sum1(r_T_b) ...
-    - self.paramWeighting.w_v * sum1(v(1:end-1).^2.* delta_t_param) ...
+    - self.paramWeighting.w_v * sum1(v(1:end-1).* delta_t_param) ...
     + self.paramWeighting.w_v_lim * sum1((v_max(1:end-1)-v(1:end-1)).^2.* delta_t_param)...
-    -  self.paramWeighting.w_vEnd * (0.5 * (self.veh.m_t*self.veh.lambda) * (v(end)^2-v(1)^2));
+    -  self.paramWeighting.w_vEnd * (0.5 * (self.veh.m_t*self.veh.lambda) * (v(end)^2-v(1)^2)) ...
+    + self.paramWeighting.w_cons  * sum1(P_b .* delta_t_param) / (s(end)-s(1)+0.0001);
 
 if strcmp(self.type , 'M')
     J = J + self.paramWeighting.w_s * sum1((int_veh_dist-self.paramConstant.s_max_v0-(v*self.paramConstant.t_ds)).^2 .* [delta_t_jerk; delta_t_jerk(end)] );

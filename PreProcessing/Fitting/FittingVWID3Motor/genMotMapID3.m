@@ -66,6 +66,11 @@ LOSS = [loss_zero_T LOSS];
 RPM=[RPM(:,1) RPM];
 Torque = [zeros(size(loss_zero_T)) Torque];
 
+
+% Remove one outlyer
+LOSS(15,5) = nan;
+
+
 % Evaluate
 figure
 hold on
@@ -102,7 +107,7 @@ motor.losses.stator_W = LOSS;
 motor.losses.inverter_W =0;
 motor.losses.all_el_W = motor.losses.iron_W + motor.losses.stator_W + motor.losses.inverter_W;
 % Mechanical motor losses
-c_m = 8;
+c_m = 4.65; % Basierend auf Ausgleichsrechnung mit https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6870001
 r_r = 0.0805;
 l_m = 0.210;
 T_loss =  c_m * 2 * r_r^3 *motor.data.n_radps*l_m;
@@ -183,7 +188,7 @@ MaxT = motor.data.p_max_vec_W./speed_vec;
 MaxT_vec= MaxT(idx:end);
 speed_vec=speed_vec(idx:end);
 
-% Fitting of maximal Power
+% Fitting of maximal Power -> Torque
 PARAP.polyX = 2;
 PARAP.polyY = 0;
 PARAP.Method = 'min SE';

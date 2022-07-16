@@ -10,7 +10,7 @@ function plotVmax(dm)
 % Input:    - dm, struct driving mission
 % ------------
 
-s = dm.lv_s();
+s = dm.lv_s()-dm.lv_s(1);
 
 
 vmax=dm.v_max;
