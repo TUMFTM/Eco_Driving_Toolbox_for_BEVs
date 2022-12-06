@@ -3,7 +3,7 @@
 This repository provides a toolbox for tank-to-distance-eco-driving for battery electric vehicles. Thereby, the losses of battery, power electronics, motor, and gearbox are 
 incorporated and minimized. Based on tabulated data (loss maps) of the single components meta-models can be generated, which can be used within the optimization. 
 The speed profile is optimized according to the users preferences (jerk, acceleration, energy, distance to the leading vehicle, ...). 
-A route optimization (R) for optimizing die speed along a given route without a leading vehicle as well as an moving horizon 
+A route optimization (R) for optimizing the speed along a given route without a leading vehicle as well as an moving horizon 
 speed planner (M) to simulate an adaptive cruise control is included. The post-processing allows the simulation of the optimization results based on the original tabulated loss-models.
  
  
